@@ -13,13 +13,16 @@ var reactify = require("reactify");
 var source = require("vinyl-source-stream");
 // concatanate files
 var concat = require('gulp-concat');
+// linter
+var eslint = require('gulp-eslint');
+
 
 var config = {
     port: 9005,
     devBaseUrl: 'http://localhost',
     paths: {
         html: './src/*.html',
-        js: './src/**/.js',
+        js: './src/**/*.js',
         css: [
             'node_modules/bootstrap/dist/css/bootstrap.min.css',
             'node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
@@ -69,9 +72,18 @@ gulp.task('css', function(){
         .pipe(connect.reload());
 });
 
+gulp.task('eslint', function(){
+    return gulp.src(config.paths.js)
+        .pipe(eslint({
+            config: 'eslint.config.json',
+        }))
+        .pipe(eslint.format());
+});
+
 gulp.task('watch', function(){
     gulp.watch(config.paths.html, ['html']);
     gulp.watch(config.paths.js, ['js']);
+    gulp.watch(config.paths.js, ['eslint']);
 });
 
-gulp.task('default',['html', 'js', 'css', 'open', 'watch']);
+gulp.task('default', ['html', 'watch', 'js', 'eslint', 'css', 'open']);
