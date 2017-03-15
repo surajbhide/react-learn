@@ -10,7 +10,7 @@ var About = React.createClass({
             } else {
                 callback();
             }
-        },
+        }
     },
     render: function(){
         return (
